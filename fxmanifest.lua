@@ -1,9 +1,10 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'qbx_adminmenu'
-repository 'https://github.com/Qbox-project/qbx_adminmenu'
-version '0.1.1'
+author "SwisserAI"
+description "Generated with SwisserAI - https://ai.swisser.dev | qbx_adminmenu"
+repository "https://github.com/Qbox-project/qbx_adminmenu"
+version '0.1.2'
 
 ox_lib 'locale'
 
@@ -22,8 +23,16 @@ client_scripts {
     'client/*.lua',
 }
 
+ui_page "html/ui.html"
+
 files {
-    'locales/*.json',
+    "locales/*.json",
+    "html/ui.html",
+    "html/style.css",
+    "html/js/*.js",
+    "html/tailwind.css",
+    "html/fonts/*.woff2",
+    "html/fonts.css"
 }
 
 lua54 'yes'

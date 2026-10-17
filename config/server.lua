@@ -23,6 +23,28 @@ return {
         clothingMenu = 'admin',
     },
 
+    abilityPerms = {
+        viewBalances = "admin",
+        viewAdmins = "mod",
+        entityView = "admin",
+        setModel = "admin",
+        noclip = "mod",
+        names = "mod",
+        blips = "mod",
+        invisible = "admin",
+        godmode = "admin",
+        vehicleGodmode = "admin",
+        infiniteAmmo = "admin",
+        giveWeapons = "admin",
+        playerActions = "mod",
+        dev = "admin",
+    },
+
+    dashboard = {
+        adminRoles = { "god", "admin", "mod" },
+        dirtyMoneyItems = { "black_money" },
+    },
+
     weaponList = {
         pistol = {
             'weapon_pistol',

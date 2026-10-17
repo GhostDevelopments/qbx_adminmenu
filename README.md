@@ -2,7 +2,7 @@
 
 # qbx_adminmenu
 
-Commands and a menu to provide tools to admins
+Commands and a permission-aware dashboard to provide tools to admins
 
 ## Features
 
@@ -18,6 +18,33 @@ Commands and a menu to provide tools to admins
 - Change a player's routing bucket
 - See information about a player, including various identifiers
 - kill/revive/freeze/kick/ban/teleport/noclip
+- Tailwind control dashboard with online player balances, dirty-money item counts, admin duty status, and role-locked tools
+- Developer entity view mode with model, network, health, and heading information
+
+## Installation
+
+Dependencies: `qbx_core`, `ox_lib`, `oxmysql`, and `ox_inventory`. Ensure this resource after those dependencies:
+
+```cfg
+ensure qbx_core
+ensure ox_lib
+ensure oxmysql
+ensure ox_inventory
+ensure qbx_adminmenu
+```
+
+The dashboard uses ACE permissions. Configure the role names, ability locks, and dirty-money item names in `config/server.lua`; the defaults are `mod`, `admin`, `god`, and `black_money`. The `abilityPerms` table controls the dashboard, entity view, noclip, names, blips, and other local tools independently.
+
+Example server permissions:
+
+```cfg
+add_ace group.admin mod allow
+add_ace group.admin admin allow
+add_ace group.admin god allow
+add_principal identifier.license:YOUR_LICENSE group.admin
+```
+
+Use `/optin` to go on admin duty, then `/admin` to open the dashboard. Press Escape to close it. The Classic menu button keeps the original ox_lib menu available.
 
 ## Player Commands
 - /report <message> send a message to admins
@@ -25,6 +52,7 @@ Commands and a menu to provide tools to admins
 ## Admin Commands
 - /admin opens the admin menu
 - /noclip toggles noclip
+- /entityview toggles developer entity view mode
 - /names toggles player names
 - /blips toggles player blips
 - /setmodel <model> [id] change the model of the given player

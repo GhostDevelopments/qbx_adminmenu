@@ -1,4 +1,4 @@
-local config = require 'config.server'.commandPerms
+local config = require "config.server"
 
 lib.addCommand('report', {
     help = 'Send Report',
@@ -11,15 +11,15 @@ end)
 
 lib.addCommand('admin', {
     help = 'Opens Admin Menu',
-    restricted = config.useMenu,
+    restricted = config.commandPerms.useMenu,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
-    TriggerClientEvent('qbx_admin:client:openMenu', source)
+    TriggerClientEvent("qbx_admin:client:openDashboard", source)
 end)
 
 lib.addCommand('noclip', {
     help = 'Toggle NoClip',
-    restricted = config.noclip,
+    restricted = config.abilityPerms.noclip,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:ToggleNoClip', source)
@@ -27,7 +27,7 @@ end)
 
 lib.addCommand('names', {
     help = 'Toggle Player Names',
-    restricted = config.names,
+    restricted = config.abilityPerms.names,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:names', source)
@@ -35,7 +35,7 @@ end)
 
 lib.addCommand('blips', {
     help = 'Toggle Player Blips',
-    restricted = config.blips,
+    restricted = config.abilityPerms.blips,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:blips', source)
@@ -43,7 +43,7 @@ end)
 
 lib.addCommand('admincar', {
     help = 'Buy Vehicle',
-    restricted = config.saveVehicle,
+    restricted = config.commandPerms.saveVehicle,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     local vehicle = GetVehiclePedIsIn(GetPlayerPed(source), false)
@@ -82,7 +82,7 @@ end)
 
 lib.addCommand('setmodel', {
     help = 'Sets your model to the given model',
-    restricted = config.setModel,
+    restricted = config.commandPerms.setModel,
     params = {
         {name = 'model', help = 'NPC Model', type = 'string'},
         {name = 'id', help = 'Player ID', type = 'number', optional = true},
@@ -96,9 +96,17 @@ lib.addCommand('setmodel', {
     TriggerClientEvent('qbx_admin:client:setModel', Target, args.model)
 end)
 
+lib.addCommand("entityview", {
+    help = "Toggle entity view mode",
+    restricted = config.abilityPerms.entityView,
+}, function(source)
+    if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
+    TriggerClientEvent("qbx_admin:client:entityView", source)
+end)
+
 lib.addCommand('vec2', {
     help = 'Copy vector2 to clipboard (Admin only)',
-    restricted = config.dev,
+    restricted = config.commandPerms.dev,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:copyToClipboard', source, 'coords2')
@@ -106,7 +114,7 @@ end)
 
 lib.addCommand('vec3', {
     help = 'Copy vector3 to clipboard (Admin only)',
-    restricted = config.dev,
+    restricted = config.commandPerms.dev,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:copyToClipboard', source, 'coords3')
@@ -114,7 +122,7 @@ end)
 
 lib.addCommand('vec4', {
     help = 'Copy vector4 to clipboard (Admin only)',
-    restricted = config.dev,
+    restricted = config.commandPerms.dev,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:copyToClipboard', source, 'coords4')
@@ -122,7 +130,7 @@ end)
 
 lib.addCommand('heading', {
     help = 'Copy heading to clipboard (Admin only)',
-    restricted = config.dev,
+    restricted = config.commandPerms.dev,
 }, function(source)
     if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
     TriggerClientEvent('qbx_admin:client:copyToClipboard', source, 'heading')

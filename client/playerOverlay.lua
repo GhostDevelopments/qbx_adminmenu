@@ -5,7 +5,7 @@ local showNames = false
 local netCheck1 = false
 local netCheck2 = false
 
-RegisterNetEvent('qbx_admin:client:blips', function()
+function QbxAdmin.TogglePlayerBlips()
     if not showBlips then
         showBlips = true
         netCheck1 = true
@@ -14,9 +14,17 @@ RegisterNetEvent('qbx_admin:client:blips', function()
         showBlips = false
         exports.qbx_core:Notify(locale('error.blips_deactivated'), 'error')
     end
+
+    return showBlips
+end
+
+RegisterNetEvent("qbx_admin:client:blips", function()
+    QbxAdmin.WithAbility("blips", function()
+        QbxAdmin.TogglePlayerBlips()
+    end)
 end)
 
-RegisterNetEvent('qbx_admin:client:names', function()
+function QbxAdmin.TogglePlayerNames()
     if not showNames then
         showNames = true
         netCheck2 = true
@@ -25,6 +33,14 @@ RegisterNetEvent('qbx_admin:client:names', function()
         showNames = false
         exports.qbx_core:Notify(locale('error.names_deactivated'), 'error')
     end
+
+    return showNames
+end
+
+RegisterNetEvent("qbx_admin:client:names", function()
+    QbxAdmin.WithAbility("names", function()
+        QbxAdmin.TogglePlayerNames()
+    end)
 end)
 
 RegisterNetEvent('qbx_admin:client:Show', function()

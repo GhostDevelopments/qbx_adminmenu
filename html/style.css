@@ -1,0 +1,8 @@
+@keyframes pulseLine {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+#adminRows > article:first-child {
+  animation: pulseLine 3s ease-in-out infinite;
+}

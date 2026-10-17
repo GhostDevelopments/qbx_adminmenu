@@ -177,9 +177,13 @@ function QbxAdmin.ToggleNoClipMode(forceMode)
         toggleNoclip()
         checkInputRotation()
     end
+
+    return noclipEnabled
 end
 
 RegisterNetEvent('qbx_admin:client:ToggleNoClip', function()
     if GetInvokingResource() then return end
-    QbxAdmin.ToggleNoClipMode()
+    QbxAdmin.WithAbility("noclip", function()
+        QbxAdmin.ToggleNoClipMode()
+    end)
 end)

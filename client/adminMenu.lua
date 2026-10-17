@@ -4,9 +4,10 @@ local infiniteAmmo = false
 local vehicleGodmode = false
 
 local options = {
-    function() QbxAdmin.ToggleNoClipMode() end,
+    function() QbxAdmin.WithAbility("noclip", function() QbxAdmin.ToggleNoClipMode() end) end,
     function() TriggerServerEvent('qbx_admin:server:playerOptionsGeneral', 2, {id = cache.serverId}) end,
     function()
+        QbxAdmin.WithAbility("invisible", function()
         optionInvisible = not optionInvisible
         if not optionInvisible then return end
         while optionInvisible do Wait(0)
@@ -14,14 +15,18 @@ local options = {
         end
 
         SetEntityVisible(cache.ped, true, false)
+        end)
     end,
     function()
+        QbxAdmin.WithAbility("godmode", function()
         godmode = not godmode
         if godmode then SetPlayerInvincible(cache.playerId, true) else SetPlayerInvincible(cache.playerId, false) end
+        end)
     end,
-    function() ExecuteCommand('names') end,
-    function() ExecuteCommand('blips') end,
+    function() QbxAdmin.WithAbility("names", function() QbxAdmin.TogglePlayerNames() end) end,
+    function() QbxAdmin.WithAbility("blips", function() QbxAdmin.TogglePlayerBlips() end) end,
     function()
+        QbxAdmin.WithAbility("vehicleGodmode", function()
         vehicleGodmode = not vehicleGodmode
         if vehicleGodmode then
             while vehicleGodmode do
@@ -36,8 +41,10 @@ local options = {
             SetEntityInvincible(cache.vehicle, false)
             SetEntityCanBeDamaged(cache.vehicle, true)
         end
+        end)
     end,
     function(switch)
+        QbxAdmin.WithAbility("setModel", function()
         if switch == 1 then
             local input = lib.inputDialog(locale('admin_options.value8_1'), {locale('admin_options.input8label')})
             if not input then return end
@@ -45,8 +52,10 @@ local options = {
         else
             ExecuteCommand('refreshskin')
         end
+        end)
     end,
     function()
+        QbxAdmin.WithAbility("infiniteAmmo", function()
         infiniteAmmo = not infiniteAmmo
         local weapon = GetSelectedPedWeapon(cache.ped)
         if infiniteAmmo then
@@ -60,9 +69,10 @@ local options = {
         else
             SetPedInfiniteAmmo(cache.ped, false, weapon)
         end
+        end)
     end,
-    function(weaponType) TriggerServerEvent('qbx_admin:server:giveAllWeapons', weaponType) end,
-    function() TriggerEvent('police:client:GetCuffed', cache.serverId, true) end,
+    function(weaponType) QbxAdmin.WithAbility("giveWeapons", function() TriggerServerEvent('qbx_admin:server:giveAllWeapons', weaponType) end) end,
+    function() QbxAdmin.WithAbility("playerActions", function() TriggerEvent('police:client:GetCuffed', cache.serverId, true) end) end,
 }
 
 lib.registerMenu({
