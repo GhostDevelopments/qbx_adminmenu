@@ -3,13 +3,14 @@ game 'gta5'
 
 description 'qbx_adminmenu'
 repository 'https://github.com/Qbox-project/qbx_adminmenu'
-version '0.1.0'
+version '0.1.1'
 
 ox_lib 'locale'
 
 shared_scripts {
     '@ox_lib/init.lua',
     '@qbx_core/modules/lib.lua',
+    'shared/*.lua',
 }
 
 server_scripts {

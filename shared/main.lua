@@ -1,0 +1,1 @@
+QbxAdmin = QbxAdmin or {}
