@@ -25,6 +25,7 @@ return {
 
     abilityPerms = {
         viewBalances = "admin",
+        viewPlayerDetails = "mod",
         viewAdmins = "mod",
         entityView = "admin",
         setModel = "admin",

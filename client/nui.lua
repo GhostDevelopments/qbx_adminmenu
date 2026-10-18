@@ -49,6 +49,23 @@ RegisterNUICallback("action", function(data, callback)
         return
     end
 
+    if action == "lookupPlayer" then
+        local result = lib.callback.await("qbx_admin:server:getPlayerDetails", false, data.playerId)
+        callback(result or { ok = false, error = "Unable to look up that player" })
+        return
+    end
+
+    if action == "playerAction" then
+        local result = lib.callback.await(
+            "qbx_admin:server:playerAction",
+            false,
+            data.playerId,
+            data.playerAction
+        )
+        callback(result or { ok = false, error = "Unable to complete that player action" })
+        return
+    end
+
     local result = lib.callback.await("qbx_admin:server:canUseAbility", false, action)
     if not result or not result.ok then
         callback(result or { ok = false, error = "Permission denied" })

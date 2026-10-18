@@ -30,7 +30,12 @@ local function getDirtyMoney(playerId)
     return total
 end
 
-local function canUseAbility(playerId, ability)
+--- Check the configured ACE role and admin-duty state for an ability.
+--- @param playerId number The administrator server ID
+--- @param ability string The configured ability key
+--- @return boolean allowed Whether the ability may run
+--- @return string|nil errorMessage The refusal reason
+function QbxAdmin.CanUseAbility(playerId, ability)
     local permission = type(ability) == "string" and config.abilityPerms[ability]
     if not permission then
         return false, "That ability is not configured"
@@ -48,7 +53,7 @@ local function canUseAbility(playerId, ability)
 end
 
 lib.callback.register("qbx_admin:server:canUseAbility", function(source, ability)
-    local allowed, errorMessage = canUseAbility(source, ability)
+    local allowed, errorMessage = QbxAdmin.CanUseAbility(source, ability)
     if not allowed then
         lib.print.warn(("Ability refused for %s: %s (%s)"):format(source, tostring(ability), errorMessage))
         return { ok = false, error = errorMessage }

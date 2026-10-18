@@ -20,6 +20,9 @@ Commands and a permission-aware dashboard to provide tools to admins
 - kill/revive/freeze/kick/ban/teleport/noclip
 - Tailwind control dashboard with online player balances, dirty-money item counts, admin duty status, and role-locked tools
 - Developer entity view mode with model, network, health, and heading information
+- Full player lookup with cash, bank, configured black-money items, license, identifiers, owned cars, and Qbox properties
+- Dashboard player actions for bring, freeze/unfreeze, kill, and set on fire, protected by the `playerActions` ability role
+- Classic player actions also include set on fire alongside the existing bring, freeze, and kill tools
 
 ## Installation
 
@@ -33,7 +36,9 @@ ensure ox_inventory
 ensure qbx_adminmenu
 ```
 
-The dashboard uses ACE permissions. Configure the role names, ability locks, and dirty-money item names in `config/server.lua`; the defaults are `mod`, `admin`, `god`, and `black_money`. The `abilityPerms` table controls the dashboard, entity view, noclip, names, blips, and other local tools independently.
+The dashboard uses ACE permissions. Configure the role names, ability locks, and dirty-money item names in `config/server.lua`; the defaults are `mod`, `admin`, `god`, and `black_money`. The `abilityPerms` table controls the dashboard, player lookup, player actions, entity view, noclip, names, blips, and other local tools independently. The classic player action menu uses the same `playerActions` lock as the dashboard.
+
+Player details read owned vehicles from Qbox's standard `player_vehicles` table and housing from the Qbox Properties `properties` table using the character's citizen ID. Missing optional tables fail safely and show an empty list; ensure the matching garage/properties resource and schema are installed for those sections to populate.
 
 Example server permissions:
 
@@ -44,7 +49,7 @@ add_ace group.admin god allow
 add_principal identifier.license:YOUR_LICENSE group.admin
 ```
 
-Use `/optin` to go on admin duty, then `/admin` to open the dashboard. Press Escape to close it. The Classic menu button keeps the original ox_lib menu available.
+Use `/optin` to go on admin duty, then `/admin` to open the dashboard. Click any online player to load the complete lookup. The player action buttons wait for server confirmation. Press Escape to close it. The Classic menu button keeps the original ox_lib menu available.
 
 ## Player Commands
 - /report <message> send a message to admins

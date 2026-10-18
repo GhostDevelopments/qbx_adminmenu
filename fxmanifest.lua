@@ -4,7 +4,7 @@ game 'gta5'
 author "SwisserAI"
 description "Generated with SwisserAI - https://ai.swisser.dev | qbx_adminmenu"
 repository "https://github.com/Qbox-project/qbx_adminmenu"
-version '0.1.2'
+version '0.1.3'
 
 ox_lib 'locale'
 

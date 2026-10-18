@@ -1,11 +1,13 @@
 const DashboardUI = (() => {
+  const abilityState = {};
   const elements = {
     playerRows: document.getElementById("playerRows"),
     adminRows: document.getElementById("adminRows"),
     playerCount: document.getElementById("playerCount"),
     balanceNotice: document.getElementById("balanceNotice"),
     updatedAt: document.getElementById("updatedAt"),
-    statusMessage: document.getElementById("statusMessage")
+    statusMessage: document.getElementById("statusMessage"),
+    playerDetails: document.getElementById("playerDetails")
   };
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
@@ -21,7 +23,7 @@ const DashboardUI = (() => {
   const playerRow = (player) => {
     const statusClass = player.adminDuty ? "text-mint" : "text-white/35";
     const statusText = player.adminRole ? `${player.adminRole} · ${player.adminDuty ? "on duty" : "off duty"}` : "Player";
-    return `<article class="grid grid-cols-2 md:grid-cols-[60px_1.5fr_1fr_100px_100px_110px] gap-3 items-center px-4 py-3 hover:bg-white/[0.03]">
+    return `<article data-player-id="${escapeHtml(player.id)}" class="grid grid-cols-2 md:grid-cols-[60px_1.5fr_1fr_100px_100px_110px] gap-3 items-center px-4 py-3 hover:bg-white/[0.03] cursor-pointer">
       <span class="text-xs text-white/45">${escapeHtml(player.id)}</span>
       <div><p class="text-sm font-semibold text-white">${escapeHtml(player.name)}</p><p class="text-xs text-white/35">${escapeHtml(player.serverName)}</p></div>
       <div><p class="text-xs ${statusClass}">${escapeHtml(statusText)}</p><p class="text-xs text-white/35">${escapeHtml(player.job)}${player.jobOnDuty ? " · duty" : ""}</p></div>
@@ -54,6 +56,8 @@ const DashboardUI = (() => {
   const render = (data) => {
     const players = Array.isArray(data.players) ? data.players : [];
     const abilities = data.abilities || {};
+    Object.keys(abilityState).forEach((key) => delete abilityState[key]);
+    Object.assign(abilityState, abilities);
     document.querySelectorAll("#actionGrid [data-action]").forEach((button) => {
       const allowed = abilities[button.dataset.action] !== false;
       button.disabled = !allowed;
@@ -73,11 +77,13 @@ const DashboardUI = (() => {
 
   const open = (data) => {
     render(data);
+    elements.playerDetails.classList.add("hidden");
     document.body.classList.remove("opacity-0", "pointer-events-none");
     document.body.classList.add("opacity-100", "pointer-events-auto");
   };
 
   const close = () => {
+    elements.playerDetails.classList.add("hidden");
     document.body.classList.add("opacity-0", "pointer-events-none");
     document.body.classList.remove("opacity-100", "pointer-events-auto");
   };
@@ -101,5 +107,21 @@ const DashboardUI = (() => {
     }
   };
 
-  return { open, close, render, handleResult };
+  const showLedger = () => {
+    elements.playerDetails.classList.add("hidden");
+    document.getElementById("players").classList.remove("hidden");
+    document.getElementById("admins").classList.remove("hidden");
+    document.getElementById("tools").classList.remove("hidden");
+  };
+
+  const isAbilityAllowed = (ability) => abilityState[ability] !== false;
+
+  const showDetails = () => {
+    elements.playerDetails.classList.remove("hidden");
+    document.getElementById("players").classList.add("hidden");
+    document.getElementById("admins").classList.add("hidden");
+    document.getElementById("tools").classList.add("hidden");
+  };
+
+  return { open, close, render, handleResult, showLedger, showDetails, isAbilityAllowed };
 })();

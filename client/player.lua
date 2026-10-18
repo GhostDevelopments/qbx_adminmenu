@@ -169,25 +169,31 @@ function GeneratePlayersMenu()
                 {label = locale('player_options.label1'), description = locale('player_options.desc1'), icon = 'fas fa-wrench'},
                 {label = locale('player_options.label2'), description = locale('player_options.desc2'), icon = 'fas fa-file-invoice'},
                 {label = locale('player_options.label3'), description = locale('player_options.desc3'), icon = 'fas fa-gamepad'},
-                {label = string.format('Name: %s', player.name)},
-                {label = string.format('Food: %s', player.food)},
-                {label = string.format('Water: %s', player.water)},
-                {label = string.format('Stress: %s', player.stress)},
-                {label = string.format('Armor: %s', player.armor)},
-                {label = string.format('Phone: %s', player.phone)},
-                {label = string.format('Crafting Rep: %s', player.craftingrep)},
-                {label = string.format('Dealer Rep: %s', player.dealerrep)},
-                {label = string.format('Cash: %s', lib.math.groupdigits(player.cash))},
-                {label = string.format('Bank: %s', lib.math.groupdigits(player.bank))},
-                {label = string.format('Job: %s', player.job)},
-                {label = string.format('Gang: %s', player.gang)},
-                {label = string.format('Radio: %s', Player(args[1].id).state.radioChannel)},
-                {label = string.format('%s', player.license), description = 'License'},
-                {label = string.format('%s', player.discord), description = 'Discord'},
-                {label = string.format('%s', player.steam), description = 'Steam'}
+                {label = string.format('Name: %s', player.name), disabled = true},
+                {label = string.format('Food: %s', player.food), disabled = true},
+                {label = string.format('Water: %s', player.water), disabled = true},
+                {label = string.format('Stress: %s', player.stress), disabled = true},
+                {label = string.format('Armor: %s', player.armor), disabled = true},
+                {label = string.format('Phone: %s', player.phone), disabled = true},
+                {label = string.format('Crafting Rep: %s', player.craftingrep), disabled = true},
+                {label = string.format('Dealer Rep: %s', player.dealerrep), disabled = true},
+                {label = string.format('Cash: %s', player.cash and lib.math.groupdigits(player.cash) or 'Restricted'), disabled = true},
+                {label = string.format('Bank: %s', player.bank and lib.math.groupdigits(player.bank) or 'Restricted'), disabled = true},
+                {label = string.format('Black money: %s', player.blackMoney and lib.math.groupdigits(player.blackMoney) or 'Restricted'), disabled = true},
+                {label = string.format('Cars owned: %s', #(player.vehicles or {})), disabled = true},
+                {label = string.format('Properties owned: %s', #(player.properties or {})), disabled = true},
+                {label = string.format('Job: %s', player.job), disabled = true},
+                {label = string.format('Gang: %s', player.gang), disabled = true},
+                {label = string.format('Radio: %s', Player(args[1].id).state.radioChannel), disabled = true},
+                {label = string.format('%s', player.license), description = 'License', disabled = true},
+                {label = string.format('%s', player.discord), description = 'Discord', disabled = true},
+                {label = string.format('%s', player.steam), description = 'Steam', disabled = true},
+                {label = 'Owned cars', description = (#(player.vehicles or {}) > 0) and 'See detailed dashboard lookup' or 'None', disabled = true},
             }
         }, function(selected)
-            playerOptions[selected]()
+            if playerOptions[selected] then
+                playerOptions[selected]()
+            end
         end)
         selectedPlayer = player
         lib.showMenu(('qbx_adminmenu_player_menu_%s'):format(args[1].id), MenuIndexes[('qbx_adminmenu_player_menu_%s'):format(args[1].id)])
@@ -211,11 +217,12 @@ lib.registerMenu({
         {label = locale('player_options.general.labelfreeze'), description = locale('player_options.general.descfreeze'), icon = 'fas fa-icicles', close = false},
         {label = locale('player_options.general.labelgoto'), description = locale('player_options.general.descgoto'), icon = 'fas fa-arrow-right-long', close = false},
         {label = locale('player_options.general.labelbring'), description = locale('player_options.general.descbring'), icon = 'fas fa-arrow-left-long', close = false},
+        {label = 'Set on fire', description = 'Ignite the selected player', icon = 'fas fa-fire', close = false},
         {label = locale('player_options.general.labelsitinveh'), description = locale('player_options.general.descsitinveh'), icon = 'fas fa-chair', close = false},
         {label = locale('player_options.general.labelrouting'), description = locale('player_options.general.descrouting'), icon = 'fas fa-bucket'},
     }
 }, function(selected)
-    if selected == 7 then
+    if selected == 8 then
         local input = lib.inputDialog(selectedPlayer.name, {
             {type = 'number', label = locale('player_options.general.labelrouting'), placeholder = '25'}
         })
@@ -224,6 +231,9 @@ lib.registerMenu({
         lib.showMenu(('qbx_adminmenu_player_menu_%s'):format(selectedPlayer?.id), MenuIndexes[('qbx_adminmenu_player_menu_%s'):format(selectedPlayer?.id)])
     else
         TriggerServerEvent('qbx_admin:server:playerOptionsGeneral', selected, selectedPlayer)
+        if selected == 7 then
+            lib.showMenu(('qbx_adminmenu_player_menu_%s'):format(selectedPlayer?.id), MenuIndexes[('qbx_adminmenu_player_menu_%s'):format(selectedPlayer?.id)])
+        end
     end
 end)
 
@@ -305,4 +315,8 @@ end)
 
 RegisterNetEvent('qbx_admin:client:killPlayer', function()
     SetEntityHealth(cache.ped, 0)
+end)
+
+RegisterNetEvent("qbx_admin:client:setPlayerOnFire", function()
+    StartEntityFire(cache.ped)
 end)

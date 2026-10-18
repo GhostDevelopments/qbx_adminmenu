@@ -35,6 +35,23 @@ document.addEventListener("click", async (event) => {
     return;
   }
 
+  const playerRow = event.target.closest("[data-player-id]");
+  if (playerRow) {
+    await PlayerDetailsUI.open(Number(playerRow.dataset.playerId));
+    return;
+  }
+
+  const playerAction = event.target.closest("[data-player-action]");
+  if (playerAction) {
+    await PlayerDetailsUI.action(playerAction.dataset.playerAction);
+    return;
+  }
+
+  if (event.target.closest("#closeDetails")) {
+    DashboardUI.showLedger();
+    return;
+  }
+
   if (event.target.closest("#closeButton")) {
     await closeUI();
   }

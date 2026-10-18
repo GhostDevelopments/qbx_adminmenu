@@ -113,6 +113,9 @@ local generalOptions = {
         CheckRoutingbucket(selectedPlayer.id, source)
         SetEntityCoords(GetPlayerPed(selectedPlayer.id), coords.x, coords.y, coords.z, false, false, false, false)
     end,
+    function(selectedPlayer)
+        TriggerClientEvent('qbx_admin:client:setPlayerOnFire', selectedPlayer.id)
+    end,
     function(selectedPlayer, source)
         local vehicle = GetVehiclePedIsIn(GetPlayerPed(selectedPlayer.id), false)
         local seat = -1
@@ -126,14 +129,17 @@ local generalOptions = {
     end,
 }
 RegisterNetEvent('qbx_admin:server:playerOptionsGeneral', function(selected, selectedPlayer, input)
-    if not IsPlayerAceAllowed(source, config.eventPerms.playerOptionsGeneral) then exports.qbx_core:Notify(source, locale('error.no_perms'), 'error') return end
-    if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
+    local allowed, errorMessage = QbxAdmin.CanUseAbility(source, 'playerActions')
+    if not allowed then
+        exports.qbx_core:Notify(source, errorMessage, 'error')
+        return
+    end
 
     selected = tonumber(selected)
     local option = selected and generalOptions[selected]
     local targetId = type(selectedPlayer) == 'table' and tonumber(selectedPlayer.id)
     if not option or not targetId or not GetPlayerName(targetId) then return end
-    if selected == 7 then
+    if selected == 8 then
         input = tonumber(input)
         if not input or input < 0 or input % 1 ~= 0 then return end
     end
@@ -301,33 +307,17 @@ lib.callback.register('qbx_admin:server:getPlayers', function(source)
 end)
 
 lib.callback.register('qbx_admin:server:getPlayer', function(source, playerToGet)
-    if not IsPlayerAceAllowed(source, config.eventPerms.useMenu) then exports.qbx_core:Notify(source, locale('error.no_perms'), 'error') return end
-    if not exports.qbx_core:IsOptin(source) then exports.qbx_core:Notify(source, locale('error.not_optin'), 'error') return end
+    local allowed, errorMessage = QbxAdmin.CanUseAbility(source, 'viewPlayerDetails')
+    if not allowed then
+        exports.qbx_core:Notify(source, errorMessage, 'error')
+        return
+    end
 
-    local target = exports.qbx_core:GetPlayer(tonumber(playerToGet))
-    if not target then return end
+    playerToGet = tonumber(playerToGet)
+    if not playerToGet or playerToGet < 1 or playerToGet ~= math.floor(playerToGet) then return end
 
-    local playerData = target.PlayerData
-    local player = {
-        id = playerToGet,
-        cid = playerData.citizenid,
-        name = playerData.charinfo.firstname .. ' ' .. playerData.charinfo.lastname .. ' | (' .. GetPlayerName(playerToGet) .. ')',
-        food = Player(playerData.source).state.hunger,
-        water = Player(playerData.source).state.thirst,
-        stress = Player(playerData.source).state.stress,
-        armor = playerData.metadata.armor,
-        phone = playerData.charinfo.phone,
-        craftingrep = playerData.metadata.craftingrep,
-        dealerrep = playerData.metadata.dealerrep,
-        cash = playerData.money.cash,
-        bank = playerData.money.bank,
-        job = playerData.job.label .. ' | ' .. playerData.job.grade.level,
-        gang = playerData.gang.label,
-        license = GetPlayerIdentifierByType(playerToGet, 'license') or 'Unknown',
-        discord = GetPlayerIdentifierByType(playerToGet, 'discord') or 'Not Linked',
-        steam = GetPlayerIdentifierByType(playerToGet, 'steam') or 'Not Linked',
-    }
-    return player
+    local balancesVisible = IsPlayerAceAllowed(source, config.abilityPerms.viewBalances)
+    return QbxAdmin.BuildPlayerDetails(playerToGet, balancesVisible)
 end)
 
 lib.callback.register('qbx_admin:server:clothingMenu', function(source, target)
